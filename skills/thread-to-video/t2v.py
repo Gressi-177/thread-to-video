@@ -234,6 +234,8 @@ def probe(f, *args):
 def cmd_memes(a):
     """List memes with their emotion tags (from memes_index.json) and whether they are downloaded."""
     idx = json.loads((SKILL_DIR / "memes_index.json").read_text())
+    extra = HOME / "memes" / "index.json"  # local-only memes (not in the repo): name -> tag
+    idx = {**idx, **(json.loads(extra.read_text()) if extra.exists() else {})}
     for name, tag in idx.items():
         f = HOME / "memes" / name
         info = ""
@@ -416,15 +418,20 @@ font:900 76px/1.15 -apple-system,'Helvetica Neue',Arial,sans-serif;color:#fff;-w
         def sfx_len(file, cap):  # seconds a sound plays: its natural length, capped (default 5s)
             return min(dur(snd(file)), cap or 5.0)
 
+        vids = set()
+
         def add(path, loop):  # append an input, return its index
             nonlocal n
+            if loop == "vid":
+                vids.add(n)
             ins.extend((["-loop", "1"] if loop == "img" else ["-stream_loop", "-1"] if loop == "vid" else []) + ["-i", path])
             n += 1
             return n - 1
 
         def overlay(idx, x, y, a0, b0, scale):
             nonlocal f, cur
-            f += (f"[{idx}:v]format=rgba,{scale},fade=t=in:st={a0:.2f}:d=0.15:alpha=1[m{idx}];[{cur}][m{idx}]"
+            shift = f"setpts=PTS+{a0:.2f}/TB," if idx in vids else ""  # start looping clips at a0, not at t=0
+            f += (f"[{idx}:v]{shift}format=rgba,{scale},fade=t=in:st={a0:.2f}:d=0.15:alpha=1[m{idx}];[{cur}][m{idx}]"
                   f"overlay=x='{x}':y='({y})+max(0,{a0:.2f}+0.2-t)/0.2*90':enable='between(t,{a0:.2f},{b0:.2f})'[v{idx}];")
             cur = f"v{idx}"
 
@@ -477,6 +484,11 @@ font:900 76px/1.15 -apple-system,'Helvetica Neue',Arial,sans-serif;color:#fff;-w
                 x = {"bl": "60", "br": "W-w-60"}.get(pos, "(W-w)/2")
                 y = {"bc": f"{bottom}+30", "center": "(H-h)/2"}.get(pos, f"{bottom}-h*0.35")
                 src = media(m["file"])
+                if not m.get("sound") and m.get("audio", True) and Path(src).suffix.lower() not in IMG \
+                        and probe(src, "-select_streams", "a", "-show_entries", "stream=codec_type"):
+                    sl = sfx_len(src, m.get("sound_dur"))  # clip with its own audio: play it like a sound effect
+                    sfx.append({"file": src, "at": a0, "vol": m.get("vol", 0.9), "dur": sl})
+                    b0 = min(max(b0, a0 + sl), total)
                 overlay(add(src, "img" if Path(src).suffix.lower() in IMG else "vid"), x, y, a0, b0, f"scale={m.get('w', 640)}:-2")
             if s["_tts"]:
                 f += f"[{add(s['_tts'], None)}:a]apad=whole_dur={total:.2f}[a]"
