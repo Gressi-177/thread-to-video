@@ -14,46 +14,53 @@ scrape the post and its comments → filter spam → Vietnamese AI voice-over �
 
 ## Install
 
-Requires **Python 3.10+** (tested on 3.14), **FFmpeg** with libx264, macOS (tested) or Linux.
+Requires **Python 3.10+** (tested on 3.14), **FFmpeg** with libx264, macOS (tested) or Linux (`brew install ffmpeg` / `sudo apt install ffmpeg fonts-noto-color-emoji`; an emoji font is needed for emoji on cards).
+
+### As a skill (one command)
+
+```bash
+npx skills add Gressi-177/thread-to-video --skill thread-to-video
+```
+
+This copies the self-contained skill folder (`SKILL.md` + the CLI + data) into your agent's skills directory (for Claude Code: `.claude/skills/`, or `~/.claude/skills/` with `-g`). Then ask your agent to make a video from a Threads link; on first use the skill runs `t2v.py setup` for you (creates a private Python env, installs Chromium, downloads ~100MB of music, backgrounds, memes and sounds into `~/.thread-to-video/`). Manual alternative: copy `skills/thread-to-video` into `~/.claude/skills/`.
+
+### As a plain CLI
 
 ```bash
 git clone https://github.com/Gressi-177/thread-to-video.git
-cd thread-to-video
-python3 -m venv .venv
-.venv/bin/pip install -r requirements.txt
-.venv/bin/playwright install chromium
-.venv/bin/python t2v.py assets          # downloads music, Minecraft background, 36 cat memes, 56 sound effects (~100MB)
+python3 thread-to-video/skills/thread-to-video/t2v.py setup     # one time, a few minutes
 ```
 
-- macOS: `brew install ffmpeg python`. Ubuntu: `sudo apt install ffmpeg python3-venv fonts-noto-color-emoji` (an emoji font is needed for emoji on cards).
-- Optional: `.venv/bin/pip install -r requirements-whisper.txt` for `transcribe` (Whisper transcription, to check the voice-over).
-- Optional: `.venv/bin/python t2v.py login` opens a separate browser; log into Threads, then close the window. Without logging in it still works, but only ~7–13 comments per post are reachable.
+- Optional: `t2v.py setup --whisper` adds Whisper for the `transcribe` command (checks the voice-over).
+- Optional: `t2v.py login` opens a separate browser; log into Threads, then close the window. Without logging in it still works, but only ~7–13 comments per post are reachable.
+- Everything heavy lives in `~/.thread-to-video/` (override with `T2V_HOME`); videos and working files go to `./out/` in the folder you run from.
 
 ## Usage
 
-### With Claude Code (recommended)
+### With an AI agent (recommended)
 
-Open this folder in [Claude Code](https://claude.com/claude-code) and send a link:
+Open any folder in [Claude Code](https://claude.com/claude-code) (or another agent that supports skills) and send a link:
 
 ```
 make a video from this thread https://www.threads.com/@user/post/XXXX
 ```
 
-The skill in `.claude/skills/thread-to-video` guides the AI to: pick 3–4 comments with a story arc and a punchline, write the hook, match cat memes and sounds to the emotion, render, check frames and the voice-over, and write a ready-to-post caption `post.txt`.
+The skill ([SKILL.md](skills/thread-to-video/SKILL.md)) guides the AI to: pick 3–4 comments with a story arc and a punchline, write the hook, match cat memes and sounds to the emotion, render, check frames and the voice-over, and write a ready-to-post caption `post.txt`.
 
 ### By hand (CLI)
 
+Below, `t2v` is `python3 thread-to-video/skills/thread-to-video/t2v.py`.
+
 ```bash
-.venv/bin/python t2v.py scrape "https://www.threads.com/@user/post/XXXX" -n 4    # -> out/XXXX/project.json
-.venv/bin/python t2v.py info out/XXXX/project.json                              # scenes, spam, estimated length
+t2v scrape "https://www.threads.com/@user/post/XXXX" -n 4    # -> out/XXXX/project.json
+t2v info out/XXXX/project.json                              # scenes, spam, estimated length
 # edit out/XXXX/project.json: pick scenes, fix the spoken text, add hook / memes / sfx (see SKILL.md)
-.venv/bin/python t2v.py render out/XXXX/project.json \
-    --bg assets/bg/minecraft-parkour.mp4 --bgm assets/music/sleepy-cat.mp3 --watermark "Page: ..."
+t2v render out/XXXX/project.json --watermark "Page: ..."    # Minecraft background + sleepy-cat music by default
 ```
 
-Outputs `out/XXXX/video.mp4` + `video_cover.jpg`. Common options: `--only N --preview` (quick render of one scene), `--rate +55%`, `--voice vi-VN-NamMinhNeural`, `--progress none`, `--quality 720`. All options: `t2v.py render -h`.
+Outputs `out/XXXX/video.mp4` + `video_cover.jpg`. Common options: `--only N --preview` (quick render of one scene), `--rate +55%`, `--voice vi-VN-NamMinhNeural`, `--bg FILE|none`, `--bgm FILE|none`, `--progress none`, `--quality 720`. All options: `t2v render -h`. See what is available: `t2v memes`, `t2v sounds`.
 
-Example `project.json` (full reference in [SKILL.md](.claude/skills/thread-to-video/SKILL.md)):
+Example `project.json` (full reference in [SKILL.md](skills/thread-to-video/SKILL.md)):
 
 ```jsonc
 {"hook": {"text": "POV: *logistics* people watching the website at 3am 😭", "dur": 2.6},
@@ -74,14 +81,15 @@ Example `project.json` (full reference in [SKILL.md](.claude/skills/thread-to-vi
 | `scrape <link>` | Scrape post + comments + images → `out/<code>/project.json` |
 | `info <project>` | Summary of scenes, spam, estimated length |
 | `render <project>` | Render MP4 + cover image |
-| `memes` | List the meme library |
-| `assets` | Download media listed in `assets/manifest.json` |
-| `login` | Log into Threads once (stored in `.profile/`, never committed) |
+| `setup` | One-time install: Python env, Chromium, media |
+| `memes` / `sounds` | List the meme / sound-effect library with descriptions |
+| `assets` | Download media listed in `manifest.json` |
+| `login` | Log into Threads once (stored in `~/.thread-to-video/.profile/`, never in the repo) |
 | `transcribe <mp4>` | Transcribe with Whisper |
 
 ## Notes
 
-- **Copyright:** the repo only contains code and a *list of sources*; media is downloaded to your machine. Memes (theselfishmeme.co.uk) and sounds (myinstants.com) have **no stated license**, so you are responsible for how you use them. The Minecraft background is **CC BY**: credit "Gameplay: Orbital - No Copyright Gameplay (CC BY)". Details: [assets/CREDITS.md](assets/CREDITS.md).
+- **Copyright:** the repo only contains code and a *list of sources*; media is downloaded to your machine by `setup`. Memes (theselfishmeme.co.uk) and sounds (myinstants.com) have **no stated license**, so you are responsible for how you use them. The Minecraft background is **CC BY**: credit "Gameplay: Orbital - No Copyright Gameplay (CC BY)". Details: [CREDITS.md](skills/thread-to-video/CREDITS.md).
 - **Other people's content:** credit the Threads author; don't use this to shame private individuals.
 - Edge TTS and Threads' page data are **unofficial** and can change at any time. TTS fails randomly; the tool retries and caches what is already done.
 - Homebrew FFmpeg on macOS may lack `drawtext`; the tool draws all text with HTML/Playwright, so it isn't needed.

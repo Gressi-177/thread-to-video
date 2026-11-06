@@ -12,46 +12,53 @@ cào bài + comment → lọc spam → giọng đọc AI tiếng Việt → th�
 
 ## Cài đặt
 
-Cần: **Python 3.10+** (đã test 3.14), **FFmpeg** có libx264, macOS (đã test) hoặc Linux.
+Cần: **Python 3.10+** (đã test 3.14), **FFmpeg** có libx264, macOS (đã test) hoặc Linux (`brew install ffmpeg` / `sudo apt install ffmpeg fonts-noto-color-emoji`; cần font emoji để thẻ hiện emoji).
+
+### Dạng skill (một lệnh)
+
+```bash
+npx skills add Gressi-177/thread-to-video --skill thread-to-video
+```
+
+Lệnh này chép thư mục skill tự đủ (`SKILL.md` + CLI + dữ liệu) vào thư mục skill của agent (Claude Code: `.claude/skills/`, thêm `-g` thì vào `~/.claude/skills/`). Sau đó nhờ agent làm video từ một link Threads; lần đầu skill tự chạy `t2v.py setup` (tạo môi trường Python riêng, cài Chromium, tải ~100MB nhạc/nền/meme/âm vào `~/.thread-to-video/`). Cách thủ công: chép `skills/thread-to-video` vào `~/.claude/skills/`.
+
+### Dạng CLI thuần
 
 ```bash
 git clone https://github.com/Gressi-177/thread-to-video.git
-cd thread-to-video
-python3 -m venv .venv
-.venv/bin/pip install -r requirements.txt
-.venv/bin/playwright install chromium
-.venv/bin/python t2v.py assets          # tải nhạc, nền Minecraft, 36 meme mèo, 56 sound effect (~100MB, vài phút)
+python3 thread-to-video/skills/thread-to-video/t2v.py setup     # một lần, vài phút
 ```
 
-- macOS: `brew install ffmpeg python`. Ubuntu: `sudo apt install ffmpeg python3-venv fonts-noto-color-emoji` (cần font emoji để thẻ hiện emoji).
-- Tuỳ chọn: `.venv/bin/pip install -r requirements-whisper.txt` để dùng `transcribe` (Whisper chép lời, kiểm tra giọng đọc).
-- Tuỳ chọn: `.venv/bin/python t2v.py login` - mở trình duyệt riêng, bạn tự đăng nhập Threads rồi đóng cửa sổ. Không đăng nhập vẫn chạy được nhưng chỉ lấy được ~7–13 comment/bài.
+- Tuỳ chọn: `t2v.py setup --whisper` thêm Whisper cho lệnh `transcribe` (kiểm tra giọng đọc).
+- Tuỳ chọn: `t2v.py login` mở trình duyệt riêng, bạn tự đăng nhập Threads rồi đóng cửa sổ. Không đăng nhập vẫn chạy được nhưng chỉ lấy được ~7–13 comment/bài.
+- Dữ liệu nặng nằm ở `~/.thread-to-video/` (đổi bằng biến `T2V_HOME`); video và file làm việc nằm ở `./out/` trong thư mục bạn đang chạy.
 
 ## Cách dùng
 
-### Với Claude Code (khuyên dùng)
+### Với AI agent (khuyên dùng)
 
-Mở thư mục này bằng [Claude Code](https://claude.com/claude-code) rồi gửi link:
+Mở một thư mục bất kỳ bằng [Claude Code](https://claude.com/claude-code) (hoặc agent khác hỗ trợ skill) rồi gửi link:
 
 ```
 làm video từ thread này https://www.threads.com/@user/post/XXXX
 ```
 
-Skill `.claude/skills/thread-to-video` hướng dẫn AI: chọn 3–4 comment có mạch và punchline, viết hook, chọn meme mèo + âm khớp cảm xúc, render, kiểm tra frame và giọng đọc, viết sẵn caption `post.txt`.
+Skill ([SKILL.md](skills/thread-to-video/SKILL.md)) hướng dẫn AI: chọn 3–4 comment có mạch và punchline, viết hook, chọn meme mèo + âm khớp cảm xúc, render, kiểm tra frame và giọng đọc, viết sẵn caption `post.txt`.
 
 ### Dùng tay (CLI)
 
+Dưới đây `t2v` là `python3 thread-to-video/skills/thread-to-video/t2v.py`.
+
 ```bash
-.venv/bin/python t2v.py scrape "https://www.threads.com/@user/post/XXXX" -n 4    # -> out/XXXX/project.json
-.venv/bin/python t2v.py info out/XXXX/project.json                              # xem cảnh, spam, độ dài ước tính
+t2v scrape "https://www.threads.com/@user/post/XXXX" -n 4    # -> out/XXXX/project.json
+t2v info out/XXXX/project.json                              # xem cảnh, spam, độ dài ước tính
 # sửa out/XXXX/project.json: chọn cảnh, sửa chữ đọc, thêm hook / meme / sfx (xem SKILL.md)
-.venv/bin/python t2v.py render out/XXXX/project.json \
-    --bg assets/bg/minecraft-parkour.mp4 --bgm assets/music/sleepy-cat.mp3 --watermark "Fanpage: ..."
+t2v render out/XXXX/project.json --watermark "Fanpage: ..."  # mặc định nền Minecraft + nhạc sleepy-cat
 ```
 
-Ra `out/XXXX/video.mp4` + `video_cover.jpg`. Tuỳ chọn hay dùng: `--only N --preview` (xem nhanh 1 cảnh), `--rate +55%`, `--voice vi-VN-NamMinhNeural`, `--progress none`, `--quality 720`. Xem tất cả: `t2v.py render -h`.
+Ra `out/XXXX/video.mp4` + `video_cover.jpg`. Tuỳ chọn hay dùng: `--only N --preview` (xem nhanh 1 cảnh), `--rate +55%`, `--voice vi-VN-NamMinhNeural`, `--bg FILE|none`, `--bgm FILE|none`, `--progress none`, `--quality 720`. Xem tất cả: `t2v render -h`. Xem kho có gì: `t2v memes`, `t2v sounds`.
 
-Ví dụ `project.json` (đầy đủ trong [SKILL.md](.claude/skills/thread-to-video/SKILL.md)):
+Ví dụ `project.json` (đầy đủ trong [SKILL.md](skills/thread-to-video/SKILL.md)):
 
 ```jsonc
 {"hook": {"text": "POV: dân *logistics* canh web lúc 3h sáng 😭", "dur": 2.6},
@@ -63,6 +70,8 @@ Ví dụ `project.json` (đầy đủ trong [SKILL.md](.claude/skills/thread-to-
  ]}
 ```
 
+`*từ*` trong hook được tô vàng. `memes[].at` / `sfx[].at`: `"start"`, `"end"` hoặc số giây. `punch: true` = zoom giật + rung.
+
 ## Lệnh
 
 | Lệnh | Việc |
@@ -71,13 +80,15 @@ Ví dụ `project.json` (đầy đủ trong [SKILL.md](.claude/skills/thread-to-
 | `info <project>` | Tóm tắt cảnh, spam, độ dài ước tính |
 | `render <project>` | Xuất MP4 + ảnh bìa |
 | `memes` | Liệt kê kho meme |
-| `assets` | Tải tài nguyên theo `assets/manifest.json` |
-| `login` | Đăng nhập Threads 1 lần (lưu ở `.profile/`, không bao giờ commit) |
+| `setup` | Cài một lần: môi trường Python, Chromium, media |
+| `memes` / `sounds` | Liệt kê kho meme / âm thanh kèm mô tả |
+| `assets` | Tải tài nguyên theo `manifest.json` |
+| `login` | Đăng nhập Threads 1 lần (lưu ở `~/.thread-to-video/.profile/`, không nằm trong repo) |
 | `transcribe <mp4>` | Chép lời bằng Whisper |
 
 ## Lưu ý
 
-- **Bản quyền:** repo chỉ chứa code và *danh sách nguồn*; media được tải về máy bạn. Meme (theselfishmeme.co.uk) và sound (myinstants.com) **không rõ giấy phép** - bạn tự chịu trách nhiệm khi đăng. Nền Minecraft là **CC BY**: ghi "Gameplay: Orbital - No Copyright Gameplay (CC BY)". Chi tiết: [assets/CREDITS.md](assets/CREDITS.md).
+- **Bản quyền:** repo chỉ chứa code và *danh sách nguồn*; media được tải về máy bạn. Meme (theselfishmeme.co.uk) và sound (myinstants.com) **không rõ giấy phép** - bạn tự chịu trách nhiệm khi đăng. Nền Minecraft là **CC BY**: ghi "Gameplay: Orbital - No Copyright Gameplay (CC BY)". Chi tiết: [CREDITS.md](skills/thread-to-video/CREDITS.md).
 - **Nội dung người khác:** ghi nguồn tác giả Threads; không dùng để bêu riếu người thường.
 - Edge TTS và cấu trúc dữ liệu Threads là **không chính thức** - có thể đổi bất cứ lúc nào. TTS hay lỗi ngẫu nhiên; tool tự thử lại và cache phần đã đọc.
 - FFmpeg trên macOS (Homebrew) có thể không có `drawtext` - tool vẽ mọi chữ bằng HTML/Playwright nên không cần.

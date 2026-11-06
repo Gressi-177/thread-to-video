@@ -1,16 +1,6 @@
-# environment + personal data
+# environment and local output
 .venv/
-.profile/
 out/
 __pycache__/
 *.pyc
 .DS_Store
-
-# media downloaded by `python t2v.py assets` (not redistributed in the repo - see assets/CREDITS.md)
-assets/bg/*.mp4
-assets/music/*.mp3
-sounds/*.mp3
-memes/*.webp
-memes/*.gif
-memes/*.png
-memes/*.jpg

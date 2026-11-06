@@ -1,16 +1,21 @@
-#!/usr/bin/env .venv/bin/python
+#!/usr/bin/env python3
 """Threads post -> 9:16 video.
   scrape <url>      -> out/<code>/project.json (scenes = original post + spam-filtered comments, candidates = all comments)
   info <project>    -> summary table (spam, estimated length, memes) for reviewing/editing
   memes [dir]       -> list the meme library
   render <project>  -> MP4 (--only N / --preview for a quick look)
   transcribe <mp4>  -> transcribe with Whisper (check the voice-over / a reference video)
-  assets            -> download music/backgrounds/memes/sounds listed in assets/manifest.json
+  setup             -> one-time install: Python env, Chromium, media (needs FFmpeg)
+  assets            -> download music/backgrounds/memes/sounds listed in manifest.json
+  sounds            -> list the sound-effect library
   login             -> log into Threads once (separate browser) to scrape more comments
 """
-import argparse, asyncio, base64, hashlib, html, json, math, random, re, subprocess, sys, time, urllib.request
+import argparse, asyncio, base64, hashlib, html, json, math, os, random, re, shutil, subprocess, sys, time, urllib.request, venv
 from pathlib import Path
 
+SKILL_DIR = Path(__file__).resolve().parent  # code + small data (lexicon, manifest, indexes) ship with the skill
+HOME = Path(os.environ.get("T2V_HOME") or Path.home() / ".thread-to-video")  # venv, media, Threads login: shared by all projects
+VENV = HOME / ".venv"
 REPLY_KEYS = ("direct_replies", "self_thread", "pinned_replies")
 EMOJI = re.compile("[\U0001F000-\U0001FAFF\u2600-\u27BF\u2B00-\u2BFF\uFE0F\u200D]+")
 IMG = (".png", ".jpg", ".jpeg", ".webp")
@@ -24,7 +29,7 @@ SPAM = [  # (regex, reason) applied to comments only, never to the original post
 ]
 
 
-LEXICON = Path(__file__).with_name("lexicon.json")  # slang/abbrev/hard words -> how they should be spoken
+LEXICON = SKILL_DIR / "lexicon.json"  # slang/abbrev/hard words -> how they should be spoken
 # Number/abbreviation rules for Vietnamese speech (e.g. "3h" -> "3 giờ" = "3 o'clock", "5tr" -> "5 triệu" = "5 million")
 RULES = [(r"=+\)+|:+\)+|:v\b|:\(+", " "), (r"(\d+)h(\d+)", r"\1 giờ \2"), (r"(\d+)h\b", r"\1 giờ"),
          (r"(\d+)/(\d+)", r"\1 trên \2"), (r"(\d+)tr\b", r"\1 triệu"), (r"(\d+)[mM]\b", r"\1 triệu"), (r"(\d+)k\b", r"\1 nghìn")]
@@ -83,7 +88,7 @@ def posts(o, in_reply=False):
             yield from posts(v, in_reply)
 
 
-PROFILE = Path(__file__).with_name(".profile")  # Playwright-managed browser profile; holds the Threads login from `login`
+PROFILE = HOME / ".profile"  # Playwright-managed browser profile; holds the Threads login from `login`
 
 
 async def fetch_page(url, scrolls=0):
@@ -217,15 +222,23 @@ def probe(f, *args):
 
 
 def cmd_memes(a):
-    d = Path(a.dir)
-    idx = json.loads((d / "index.json").read_text()) if (d / "index.json").exists() else {}
-    for f in sorted(d.glob("*")):
-        if f.suffix.lower() in IMG + (".gif", ".mp4", ".mov", ".webm"):
-            wh = probe(f, "-select_streams", "v:0", "-show_entries", "stream=width,height")
-            du = probe(f, "-show_entries", "format=duration")
-            du = du if du.replace(".", "").isdigit() else 0  # still images report N/A
-            au = "audio" if probe(f, "-select_streams", "a", "-show_entries", "stream=codec_type") else "mute"
-            print(f"{f}  {wh}  {float(du or 0):.1f}s  {au}  tag={idx.get(f.name, '?')}")
+    """List memes with their emotion tags (from memes_index.json) and whether they are downloaded."""
+    idx = json.loads((SKILL_DIR / "memes_index.json").read_text())
+    for name, tag in idx.items():
+        f = HOME / "memes" / name
+        info = ""
+        if f.exists():
+            info = probe(f, "-select_streams", "v:0", "-show_entries", "stream=width,height")
+        print(f"{name:40} {info or 'NOT DOWNLOADED':16} {tag}")
+
+
+def cmd_sounds(a):
+    """List sound effects with their descriptions (from sounds_index.json) and whether they are downloaded."""
+    idx = json.loads((SKILL_DIR / "sounds_index.json").read_text())
+    for name, tag in idx.items():
+        f = HOME / "sounds" / name
+        d = probe(f, "-show_entries", "format=duration") if f.exists() else ""
+        print(f"{name:34} {(d[:4] + 's') if d else 'NOT DOWNLOADED':>14}  {tag}")
 
 
 # ---------------------------------------------------------------- render
@@ -542,10 +555,47 @@ def lufs(f):
     return float(re.findall(r"I:\s+(-?[\d.]+) LUFS", r.stderr)[-1])
 
 
+def venv_python():
+    return VENV / ("Scripts/python.exe" if os.name == "nt" else "bin/python")
+
+
+def cmd_setup(a):
+    """One-time install into ~/.thread-to-video: Python env, Chromium, media. Safe to rerun (skips finished work)."""
+    for tool in ("ffmpeg", "ffprobe"):
+        if not shutil.which(tool):
+            sys.exit(f"{tool} not found. Install FFmpeg first (macOS: brew install ffmpeg, Ubuntu: sudo apt install ffmpeg).")
+    HOME.mkdir(parents=True, exist_ok=True)
+    marker = HOME / ".setup-done"
+    reqs = [SKILL_DIR / "requirements.txt"] + ([SKILL_DIR / "requirements-whisper.txt"] if a.whisper else [])
+    stamp = hashlib.sha1(b"".join(r.read_bytes() for r in reqs)).hexdigest()
+    if not (marker.exists() and marker.read_text() == stamp) or a.force:
+        if not venv_python().exists():
+            print("... creating Python environment")
+            venv.create(VENV, with_pip=True)
+        py = str(venv_python())
+        for r in reqs:
+            print(f"... installing {r.name}")
+            subprocess.run([py, "-m", "pip", "install", "-q", "-r", str(r)], check=True)
+        print("... installing Chromium for Playwright (the first time takes a while)")
+        subprocess.run([py, "-m", "playwright", "install", "chromium"], check=True)
+        marker.write_text(stamp)
+    if not a.no_assets:
+        cmd = [str(venv_python()), str(Path(__file__).resolve()), "assets"] + (["--no-bg"] if a.no_bg else [])
+        subprocess.run(cmd, check=True)
+    print(f"OK: ready. Data lives in {HOME}")
+
+
+def reexec_in_venv():
+    """Run inside ~/.thread-to-video/.venv when it exists, so `python3 t2v.py <cmd>` works after `setup`."""
+    py = venv_python()
+    if py.exists() and Path(sys.prefix).resolve() != VENV.resolve():
+        os.execv(str(py), [str(py), str(Path(__file__).resolve()), *sys.argv[1:]])
+
+
 def cmd_assets(a):
-    """Download media listed in assets/manifest.json (media files are not stored in the repo)."""
-    root = Path(__file__).parent
-    M = json.loads((root / "assets" / "manifest.json").read_text())
+    """Download media listed in manifest.json into ~/.thread-to-video (media files are not stored in the repo)."""
+    root = HOME
+    M = json.loads((SKILL_DIR / "manifest.json").read_text())
     ok = fail = 0
     for kind in ("music", "sounds", "memes", "bg"):
         if kind == "bg" and a.no_bg:
@@ -578,7 +628,7 @@ def cmd_assets(a):
                 print(f"ERROR {it['file']}: {e}")
             finally:
                 tmp.unlink(missing_ok=True)
-    print(f"OK: downloaded {ok} files, {fail} errors. Sources and licenses: assets/CREDITS.md")
+    print(f"OK: downloaded {ok} files, {fail} errors. Sources and licenses: CREDITS.md (next to SKILL.md)")
 
 
 def cmd_transcribe(a):
@@ -599,17 +649,24 @@ if __name__ == "__main__":
     s.add_argument("url"); s.add_argument("-n", type=int, default=4, help="number of comments to pick automatically (edit later)")
     s.add_argument("-o", "--out", help="output folder"); s.add_argument("--keep-spam", action="store_true")
     s.add_argument("--scroll", type=int, default=8, help="scroll count to load more comments (0 = no scrolling)")
+    s = sub.add_parser("setup", help="one-time install (Python env, Chromium, media)"); s.set_defaults(fn=cmd_setup)
+    s.add_argument("--whisper", action="store_true", help="also install Whisper (for transcribe)")
+    s.add_argument("--no-assets", action="store_true", help="skip the media download")
+    s.add_argument("--no-bg", action="store_true", help="skip background videos (large)")
+    s.add_argument("--force", action="store_true", help="reinstall even if already set up")
     s = sub.add_parser("login"); s.set_defaults(fn=cmd_login)
     s = sub.add_parser("assets", help="download music/backgrounds/memes/sounds"); s.set_defaults(fn=cmd_assets)
     s.add_argument("--force", action="store_true", help="re-download files that already exist"); s.add_argument("--no-bg", action="store_true", help="skip background videos (large)")
     s = sub.add_parser("info"); s.set_defaults(fn=cmd_info); s.add_argument("project")
-    s = sub.add_parser("memes"); s.set_defaults(fn=cmd_memes); s.add_argument("dir", nargs="?", default="memes")
+    s = sub.add_parser("memes", help="list memes"); s.set_defaults(fn=cmd_memes)
+    s = sub.add_parser("sounds", help="list sound effects"); s.set_defaults(fn=cmd_sounds)
     s = sub.add_parser("transcribe"); s.set_defaults(fn=cmd_transcribe)
     s.add_argument("file"); s.add_argument("--model", default="small")
     r = sub.add_parser("render"); r.set_defaults(fn=cmd_render)
-    r.add_argument("project"); r.add_argument("--bg", help="background video (mp4)"); r.add_argument("--bgm", help="background music")
+    r.add_argument("project"); r.add_argument("--bg", help="background video (mp4); default: the Minecraft clip if downloaded, 'none' = plain colour")
+    r.add_argument("--bgm", help="background music; default: sleepy-cat if downloaded, 'none' = no music")
     r.add_argument("--bgm-vol", type=float, default=0.25, help="music volume (ducks automatically under the voice)")
-    r.add_argument("--watermark"); r.add_argument("--memes-dir", default="memes"); r.add_argument("--sounds-dir", default="sounds")
+    r.add_argument("--watermark"); r.add_argument("--memes-dir", default=str(HOME / "memes")); r.add_argument("--sounds-dir", default=str(HOME / "sounds"))
     r.add_argument("--voice", default="vi-VN-HoaiMyNeural"); r.add_argument("--rate", default="+55%"); r.add_argument("--pitch", default="-4Hz", help="e.g. -6Hz: lower, flatter, deadpan voice")
     r.add_argument("--card-y", type=float, default=0.36, help="vertical centre of the card (0 = top, 1 = bottom)")
     r.add_argument("--grad", help="colour of a gradient fading in at the bottom, e.g. #ff8a00"); r.add_argument("--max-chars", type=int, default=600)
@@ -617,5 +674,12 @@ if __name__ == "__main__":
     r.add_argument("--progress", default="0xFFD400", help="colour of the progress bar at the top, 'none' to disable")
     r.add_argument("--quality", type=int, choices=[540, 720, 1080], default=1080); r.add_argument("--lufs", type=float, default=-14)
     r.add_argument("--only", type=int, help="render only scene N (quick look)"); r.add_argument("--preview", action="store_true", help="fast, 540p")
-    r.add_argument("-o", "--out", help="file mp4 ra")
-    a = ap.parse_args(); a.fn(a)
+    r.add_argument("-o", "--out", help="output mp4 file")
+    if len(sys.argv) > 1 and sys.argv[1] != "setup":
+        reexec_in_venv()
+    a = ap.parse_args()
+    if a.fn is cmd_render:  # defaults for background and music, if the media was downloaded
+        for attr, default in (("bg", HOME / "assets/bg/minecraft-parkour.mp4"), ("bgm", HOME / "assets/music/sleepy-cat.mp3")):
+            v = getattr(a, attr)
+            setattr(a, attr, None if v == "none" else v or (str(default) if default.exists() else None))
+    a.fn(a)
