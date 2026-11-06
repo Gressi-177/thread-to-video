@@ -88,7 +88,7 @@ Ví dụ `project.json` (đầy đủ trong [SKILL.md](skills/thread-to-video/SK
 
 ## Lưu ý
 
-- **Bản quyền:** repo chỉ chứa code và *danh sách nguồn*; media được tải về máy bạn. Meme (theselfishmeme.co.uk) và sound (myinstants.com) **không rõ giấy phép** - bạn tự chịu trách nhiệm khi đăng. Nền Minecraft là **CC BY**: ghi "Gameplay: Orbital - No Copyright Gameplay (CC BY)". Chi tiết: [CREDITS.md](skills/thread-to-video/CREDITS.md).
+- **Bản quyền:** repo chứa code, *danh sách nguồn* và 39 video meme ngắn trong `assets/memes/` (không rõ giấy phép, sưu tầm trên mạng); phần media còn lại được tải về máy bạn. Meme (theselfishmeme.co.uk) và sound (myinstants.com) **không rõ giấy phép** - bạn tự chịu trách nhiệm khi đăng. Nền Minecraft là **CC BY**: ghi "Gameplay: Orbital - No Copyright Gameplay (CC BY)". Chi tiết: [CREDITS.md](skills/thread-to-video/CREDITS.md).
 - **Nội dung người khác:** ghi nguồn tác giả Threads; không dùng để bêu riếu người thường.
 - Edge TTS và cấu trúc dữ liệu Threads là **không chính thức** - có thể đổi bất cứ lúc nào. TTS hay lỗi ngẫu nhiên; tool tự thử lại và cache phần đã đọc.
 - FFmpeg trên macOS (Homebrew) có thể không có `drawtext` - tool vẽ mọi chữ bằng HTML/Playwright nên không cần.

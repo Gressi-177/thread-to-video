@@ -89,7 +89,7 @@ Example `project.json` (full reference in [SKILL.md](skills/thread-to-video/SKIL
 
 ## Notes
 
-- **Copyright:** the repo only contains code and a *list of sources*; media is downloaded to your machine by `setup`. Memes (theselfishmeme.co.uk) and sounds (myinstants.com) have **no stated license**, so you are responsible for how you use them. The Minecraft background is **CC BY**: credit "Gameplay: Orbital - No Copyright Gameplay (CC BY)". Details: [CREDITS.md](skills/thread-to-video/CREDITS.md).
+- **Copyright:** the repo contains code, a *list of sources* and 39 short video memes in `assets/memes/` (no stated license, collected from the web); the rest of the media is downloaded to your machine by `setup`. Memes (theselfishmeme.co.uk) and sounds (myinstants.com) have **no stated license**, so you are responsible for how you use them. The Minecraft background is **CC BY**: credit "Gameplay: Orbital - No Copyright Gameplay (CC BY)". Details: [CREDITS.md](skills/thread-to-video/CREDITS.md).
 - **Other people's content:** credit the Threads author; don't use this to shame private individuals.
 - Edge TTS and Threads' page data are **unofficial** and can change at any time. TTS fails randomly; the tool retries and caches what is already done.
 - Homebrew FFmpeg on macOS may lack `drawtext`; the tool draws all text with HTML/Playwright, so it isn't needed.
