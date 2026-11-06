@@ -1,0 +1,395 @@
+{
+ "_note": "Source list for the media files. The media itself is NOT stored in the repo; run 'python t2v.py assets' to download it. Licenses: see assets/CREDITS.md.",
+ "bg": [
+  {
+   "file": "assets/bg/minecraft-parkour.mp4",
+   "youtube": "s600FYgI5-s",
+   "section": "30-210",
+   "license": "CC BY - Orbital - No Copyright Gameplay"
+  },
+  {
+   "file": "assets/bg/view-of-the-rail-tracks-from-the-train.mp4",
+   "url": "https://assets.mixkit.co/videos/25132/25132-720.mp4",
+   "license": "Mixkit"
+  }
+ ],
+ "music": [
+  {
+   "file": "assets/music/sleepy-cat.mp3",
+   "url": "https://assets.mixkit.co/music/135/135.mp3",
+   "license": "Mixkit"
+  }
+ ],
+ "sounds": [
+  {
+   "file": "sounds/vn-ten-out-of-ten.mp3",
+   "url": "https://www.myinstants.com/media/sounds/10-diem.mp3"
+  },
+  {
+   "file": "sounds/vn-ai-o-si-ma.mp3",
+   "url": "https://www.myinstants.com/media/sounds/ai-o-si-ma.mp3"
+  },
+  {
+   "file": "sounds/among-us-reveal.mp3",
+   "url": "https://www.myinstants.com/media/sounds/among-us-role-reveal-sound.mp3"
+  },
+  {
+   "file": "sounds/anime-ahh.mp3",
+   "url": "https://www.myinstants.com/media/sounds/anime-ahh.mp3"
+  },
+  {
+   "file": "sounds/anime-wow.mp3",
+   "url": "https://www.myinstants.com/media/sounds/anime-wow-sound-effect.mp3"
+  },
+  {
+   "file": "sounds/bonk.mp3",
+   "url": "https://www.myinstants.com/media/sounds/bonk_7zPAD7C.mp3"
+  },
+  {
+   "file": "sounds/bruh.mp3",
+   "url": "https://www.myinstants.com/media/sounds/movie_1.mp3"
+  },
+  {
+   "file": "sounds/alert-metal-gear.mp3",
+   "url": "https://www.myinstants.com/media/sounds/metal-gear-alert-sound-effect_XKoHReZ.mp3"
+  },
+  {
+   "file": "sounds/boy-laugh.mp3",
+   "url": "https://www.myinstants.com/media/sounds/boy-laugh-cau-be-cuoi.mp3"
+  },
+  {
+   "file": "sounds/vn-you-must-be-tired.mp3",
+   "url": "https://www.myinstants.com/media/sounds/chac-la-cau-met-moi-lam.mp3"
+  },
+  {
+   "file": "sounds/vn-did-anyone-laugh.mp3",
+   "url": "https://www.myinstants.com/media/sounds/m-thay-co-ai-cuoi-khong.mp3"
+  },
+  {
+   "file": "sounds/vn-sly-laugh.mp3",
+   "url": "https://www.myinstants.com/media/sounds/cuoi-deu.mp3"
+  },
+  {
+   "file": "sounds/ding.mp3",
+   "url": "https://www.myinstants.com/media/sounds/ding-sound-effect_2.mp3"
+  },
+  {
+   "file": "sounds/tiktok-drama.mp3",
+   "url": "https://www.myinstants.com/media/sounds/bgc-dramatic-music-tiktok-drama-effect-audio-tiktok-new-trend_LYggtlV.mp3"
+  },
+  {
+   "file": "sounds/dun-dun-dun.mp3",
+   "url": "https://www.myinstants.com/media/sounds/dun-dun-dun-sound-effect-brass_8nFBccR.mp3"
+  },
+  {
+   "file": "sounds/baby-laugh.mp3",
+   "url": "https://www.myinstants.com/media/sounds/baby-laughing-meme.mp3"
+  },
+  {
+   "file": "sounds/emotional-damage.mp3",
+   "url": "https://www.myinstants.com/media/sounds/emotional-damage-meme.mp3"
+  },
+  {
+   "file": "sounds/faaah.mp3",
+   "url": "https://www.myinstants.com/media/sounds/faaah.mp3"
+  },
+  {
+   "file": "sounds/fahhh.mp3",
+   "url": "https://www.myinstants.com/media/sounds/fahhhhhhhhhhhhhh.mp3"
+  },
+  {
+   "file": "sounds/vn-impressive-right.mp3",
+   "url": "https://www.myinstants.com/media/sounds/ghe-chua-ghe-chua.mp3"
+  },
+  {
+   "file": "sounds/vn-trouble-incoming.mp3",
+   "url": "https://www.myinstants.com/media/sounds/goi-goi-toi-cong-chuyen.mp3"
+  },
+  {
+   "file": "sounds/haha.mp3",
+   "url": "https://www.myinstants.com/media/sounds/ny-video-online-audio-converter.mp3"
+  },
+  {
+   "file": "sounds/huh.mp3",
+   "url": "https://www.myinstants.com/media/sounds/huh_37bAoRo.mp3"
+  },
+  {
+   "file": "sounds/vn-linda-jz-ma.mp3",
+   "url": "https://www.myinstants.com/media/sounds/linda-jz-ma.mp3"
+  },
+  {
+   "file": "sounds/windows-10-error.mp3",
+   "url": "https://www.myinstants.com/media/sounds/windows-10-error-sound.mp3"
+  },
+  {
+   "file": "sounds/windows-xp-error.mp3",
+   "url": "https://www.myinstants.com/media/sounds/erro.mp3"
+  },
+  {
+   "file": "sounds/lost-connection.mp3",
+   "url": "https://www.myinstants.com/media/sounds/loading-lost-connection-green-screen-with-sound-effect-2.mp3"
+  },
+  {
+   "file": "sounds/cat-laugh.mp3",
+   "url": "https://www.myinstants.com/media/sounds/cat-laugh-meme-1.mp3"
+  },
+  {
+   "file": "sounds/metal-pipe.mp3",
+   "url": "https://www.myinstants.com/media/sounds/metal-pipe-clang.mp3"
+  },
+  {
+   "file": "sounds/nani.mp3",
+   "url": "https://www.myinstants.com/media/sounds/nani_-meme-sound-effect-su0k4q3yrfw-mp3cut.mp3"
+  },
+  {
+   "file": "sounds/capcut-explosion.mp3",
+   "url": "https://www.myinstants.com/media/sounds/capcut-explosion-sound.mp3"
+  },
+  {
+   "file": "sounds/oh-my-god.mp3",
+   "url": "https://www.myinstants.com/media/sounds/oh-my-god-meme.mp3"
+  },
+  {
+   "file": "sounds/oh-no-no-no.mp3",
+   "url": "https://www.myinstants.com/media/sounds/oh-no-no-no-tik-tok-song-sound-effect.mp3"
+  },
+  {
+   "file": "sounds/vn-oi-doi-oi.mp3",
+   "url": "https://www.myinstants.com/media/sounds/y2mate-mp3cut_d1tt0z9.mp3"
+  },
+  {
+   "file": "sounds/pop.mp3",
+   "url": "https://www.myinstants.com/media/sounds/pop_7e9Is8L.mp3"
+  },
+  {
+   "file": "sounds/pop-anime.mp3",
+   "url": "https://www.myinstants.com/media/sounds/anime-pop-sfx.mp3"
+  },
+  {
+   "file": "sounds/punch.mp3",
+   "url": "https://www.myinstants.com/media/sounds/punch-gaming-sound-effect-hd_RzlG1GE.mp3"
+  },
+  {
+   "file": "sounds/quick-ting.mp3",
+   "url": "https://www.myinstants.com/media/sounds/quick-ting.mp3"
+  },
+  {
+   "file": "sounds/record-scratch.mp3",
+   "url": "https://www.myinstants.com/media/sounds/record-scratch-clean.mp3"
+  },
+  {
+   "file": "sounds/sad-violin.mp3",
+   "url": "https://www.myinstants.com/media/sounds/tf_nemesis.mp3"
+  },
+  {
+   "file": "sounds/shocked.mp3",
+   "url": "https://www.myinstants.com/media/sounds/shocked-sound-effect.mp3"
+  },
+  {
+   "file": "sounds/shocking.mp3",
+   "url": "https://www.myinstants.com/media/sounds/shocking_0NL2w3I.mp3"
+  },
+  {
+   "file": "sounds/taco-bell-bong.mp3",
+   "url": "https://www.myinstants.com/media/sounds/taco-bell-bong-sfx.mp3"
+  },
+  {
+   "file": "sounds/vn-teacher-ba-laugh.mp3",
+   "url": "https://www.myinstants.com/media/sounds/thay-giao-ba-cuoi.mp3"
+  },
+  {
+   "file": "sounds/vn-teacher-huan-oh-dear.mp3",
+   "url": "https://www.myinstants.com/media/sounds/thay-huan-oi-gioi-oi.mp3"
+  },
+  {
+   "file": "sounds/the-rock.mp3",
+   "url": "https://www.myinstants.com/media/sounds/the-rock-meme-sound-effect.mp3"
+  },
+  {
+   "file": "sounds/vn-save-me.mp3",
+   "url": "https://www.myinstants.com/media/sounds/troi-oi-cuu-tui-troi-oi.mp3"
+  },
+  {
+   "file": "sounds/vn-wait-hahaha.mp3",
+   "url": "https://www.myinstants.com/media/sounds/troi-oi-khoan-hahaha.mp3"
+  },
+  {
+   "file": "sounds/vn-how-embarrassing.mp3",
+   "url": "https://www.myinstants.com/media/sounds/troi-troi-no-lam-gi-kho-coi-troi.mp3"
+  },
+  {
+   "file": "sounds/vine-boom.mp3",
+   "url": "https://www.myinstants.com/media/sounds/vine-boom.mp3"
+  },
+  {
+   "file": "sounds/vine-surprise.mp3",
+   "url": "https://www.myinstants.com/media/sounds/vine-dramatic-surprise.mp3"
+  },
+  {
+   "file": "sounds/wait-what.mp3",
+   "url": "https://www.myinstants.com/media/sounds/wait-what.mp3"
+  },
+  {
+   "file": "sounds/whoosh.mp3",
+   "url": "https://www.myinstants.com/media/sounds/transition-whoosh.mp3"
+  },
+  {
+   "file": "sounds/whoosh-funny.mp3",
+   "url": "https://www.myinstants.com/media/sounds/funny-whoosh.mp3"
+  },
+  {
+   "file": "sounds/whoosh-fast.mp3",
+   "url": "https://www.myinstants.com/media/sounds/fast-whoosh.mp3"
+  },
+  {
+   "file": "sounds/anime-wow-short.mp3",
+   "url": "https://www.myinstants.com/media/sounds/anime-wow-sound-effect-mp3cut.mp3"
+  }
+ ],
+ "memes": [
+  {
+   "file": "memes/cat-eating-burger.webp",
+   "url": "https://theselfishmeme.co.uk/wp-content/uploads/2025/09/anh-meme-meo-sieu-de-thuong-55.webp"
+  },
+  {
+   "file": "memes/cat-gave-up.webp",
+   "url": "https://theselfishmeme.co.uk/wp-content/uploads/2025/09/meme-meo-bat-luc-bo-tay-20.webp"
+  },
+  {
+   "file": "memes/cat-with-gun.webp",
+   "url": "https://theselfishmeme.co.uk/wp-content/uploads/2025/09/meme-meo-cam-dao-vui-nhon-3.webp"
+  },
+  {
+   "file": "memes/cat-nosebleed-excited.webp",
+   "url": "https://theselfishmeme.co.uk/wp-content/uploads/2025/09/meme-meo-ha-mom-bat-ngo-11.webp"
+  },
+  {
+   "file": "memes/cat-pointing-laughing.webp",
+   "url": "https://theselfishmeme.co.uk/wp-content/uploads/2025/09/meme-meo-chi-tay-cuoi-2.webp"
+  },
+  {
+   "file": "memes/cat-pointing-judging.webp",
+   "url": "https://theselfishmeme.co.uk/wp-content/uploads/2025/09/meme-meo-phan-xet-4.webp"
+  },
+  {
+   "file": "memes/cat-beach-chill.webp",
+   "url": "https://theselfishmeme.co.uk/wp-content/uploads/2025/09/anh-meme-meo-sieu-de-thuong-59.webp"
+  },
+  {
+   "file": "memes/cat-shy-poking-fingers.webp",
+   "url": "https://theselfishmeme.co.uk/wp-content/uploads/2025/09/meme-meo-ngai-ngung-19.webp"
+  },
+  {
+   "file": "memes/cat-trying-not-to-cry.webp",
+   "url": "https://theselfishmeme.co.uk/wp-content/uploads/2025/09/anh-meme-meo-sieu-de-thuong-51.webp"
+  },
+  {
+   "file": "memes/cat-laughing-haha.webp",
+   "url": "https://theselfishmeme.co.uk/wp-content/uploads/2025/09/meme-meo-cuoi-de-thuong-dang-yeu-48.webp"
+  },
+  {
+   "file": "memes/cat-awkward-smile-hands-together.webp",
+   "url": "https://theselfishmeme.co.uk/wp-content/uploads/2025/09/meme-meo-bat-luc-bo-tay-4.webp"
+  },
+  {
+   "file": "memes/cat-gasping.webp",
+   "url": "https://theselfishmeme.co.uk/wp-content/uploads/2025/09/meme-meo-ha-mom-bat-ngo-14.webp"
+  },
+  {
+   "file": "memes/cat-open-mouth-closeup.webp",
+   "url": "https://theselfishmeme.co.uk/wp-content/uploads/2025/09/ha-mom-meme-meo-cuoi-22.webp"
+  },
+  {
+   "file": "memes/cat-screaming-panic.webp",
+   "url": "https://theselfishmeme.co.uk/wp-content/uploads/2025/09/meme-meo-hoang-hot-4.webp"
+  },
+  {
+   "file": "memes/cat-confused-question-marks.webp",
+   "url": "https://theselfishmeme.co.uk/wp-content/uploads/2025/09/meme-meo-ha-mom-bat-ngo-15.webp"
+  },
+  {
+   "file": "memes/cat-arms-crossed-grumpy.webp",
+   "url": "https://theselfishmeme.co.uk/wp-content/uploads/2025/09/meme-meo-gian-du-7.webp"
+  },
+  {
+   "file": "memes/cat-sobbing-on-floor.webp",
+   "url": "https://theselfishmeme.co.uk/wp-content/uploads/2025/09/anh-meme-meo-khoc-loc-tham-thiet-7.webp"
+  },
+  {
+   "file": "memes/cat-crying-group.webp",
+   "url": "https://theselfishmeme.co.uk/wp-content/uploads/2025/09/anh-meme-meo-sieu-de-thuong-50.webp"
+  },
+  {
+   "file": "memes/cat-wiping-tears.webp",
+   "url": "https://theselfishmeme.co.uk/wp-content/uploads/2025/09/meme-meo-om-dau-la-het-3.webp"
+  },
+  {
+   "file": "memes/cat-tongue-out.webp",
+   "url": "https://theselfishmeme.co.uk/wp-content/uploads/2025/09/anh-meme-meo-sieu-de-thuong-46.webp"
+  },
+  {
+   "file": "memes/cat-side-eye.webp",
+   "url": "https://theselfishmeme.co.uk/wp-content/uploads/2025/09/meme-meo-liec-mat-18.webp"
+  },
+  {
+   "file": "memes/cat-like.webp",
+   "url": "https://theselfishmeme.co.uk/wp-content/uploads/2025/09/anh-meme-con-meo-like-oke-3.webp"
+  },
+  {
+   "file": "memes/cat-sprawled-on-sofa.webp",
+   "url": "https://theselfishmeme.co.uk/wp-content/uploads/2025/09/meme-meo-met-moi-ue-oai-24.webp"
+  },
+  {
+   "file": "memes/cat-flopped-on-floor.webp",
+   "url": "https://theselfishmeme.co.uk/wp-content/uploads/2025/09/meme-meo-bat-luc-bo-tay-19.webp"
+  },
+  {
+   "file": "memes/cat-yawning.webp",
+   "url": "https://theselfishmeme.co.uk/wp-content/uploads/2025/09/meme-meo-buon-ngu-hai-huoc-2.webp"
+  },
+  {
+   "file": "memes/cat-cool-sunglasses.webp",
+   "url": "https://theselfishmeme.co.uk/wp-content/uploads/2025/09/anh-meme-meo-sieu-de-thuong-58.webp"
+  },
+  {
+   "file": "memes/cat-asleep-on-laptop.webp",
+   "url": "https://theselfishmeme.co.uk/wp-content/uploads/2025/09/meme-meo-buon-ngu-hai-huoc-20.webp"
+  },
+  {
+   "file": "memes/cat-startled-by-cucumber.webp",
+   "url": "https://theselfishmeme.co.uk/wp-content/uploads/2025/09/meme-meo-hoang-hot-3.webp"
+  },
+  {
+   "file": "memes/cat-hands-on-head.webp",
+   "url": "https://theselfishmeme.co.uk/wp-content/uploads/2025/09/meme-meo-om-dau-la-het-6.webp"
+  },
+  {
+   "file": "memes/cat-judging.webp",
+   "url": "https://theselfishmeme.co.uk/wp-content/uploads/2025/09/meme-meo-phan-xet-3.webp"
+  },
+  {
+   "file": "memes/cat-screaming-shock.webp",
+   "url": "https://theselfishmeme.co.uk/wp-content/uploads/2025/09/meme-meo-soc-dang-yeu-29.webp"
+  },
+  {
+   "file": "memes/cat-shocked-pair.webp",
+   "url": "https://theselfishmeme.co.uk/wp-content/uploads/2025/09/anh-meme-meo-sieu-de-thuong-57.webp"
+  },
+  {
+   "file": "memes/cat-with-flower.webp",
+   "url": "https://theselfishmeme.co.uk/wp-content/uploads/2025/09/anh-meme-meo-sieu-de-thuong-54.webp"
+  },
+  {
+   "file": "memes/cat-begging-forgiveness.webp",
+   "url": "https://theselfishmeme.co.uk/wp-content/uploads/2025/09/meme-meo-xin-loi-nguoi-yeu-15.webp"
+  },
+  {
+   "file": "memes/cat-thumbs-up-teary.webp",
+   "url": "https://theselfishmeme.co.uk/wp-content/uploads/2025/09/anh-meme-meo-sieu-de-thuong-48.webp"
+  },
+  {
+   "file": "memes/cat-angry-wig.webp",
+   "url": "https://theselfishmeme.co.uk/wp-content/uploads/2025/09/meme-meo-gian-doi-tuc-gian-14.webp"
+  }
+ ]
+}
