@@ -22,6 +22,15 @@ npx skills add Gressi-177/thread-to-video --skill thread-to-video
 
 Lệnh này chép thư mục skill tự đủ (`SKILL.md` + CLI + dữ liệu) vào thư mục skill của agent (Claude Code: `.claude/skills/`, thêm `-g` thì vào `~/.claude/skills/`). Sau đó nhờ agent làm video từ một link Threads; lần đầu skill tự chạy `t2v.py setup` (tạo môi trường Python riêng, cài Chromium, tải ~100MB nhạc/nền/meme/âm vào `~/.thread-to-video/`). Cách thủ công: chép `skills/thread-to-video` vào `~/.claude/skills/`.
 
+### Cập nhật
+
+```bash
+npx skills update thread-to-video        # cài theo project (thêm -g nếu cài global)
+python3 <thư mục skill>/t2v.py assets     # tải media mới nếu manifest có thêm
+```
+
+`update` ghi đè thư mục skill bằng bản mới nhất trên GitHub; media trong `~/.thread-to-video/` được giữ nguyên, `assets` chỉ tải phần còn thiếu. Với CLI thuần thì `git pull`.
+
 ### Dạng CLI thuần
 
 ```bash

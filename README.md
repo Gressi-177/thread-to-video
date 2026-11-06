@@ -24,6 +24,15 @@ npx skills add Gressi-177/thread-to-video --skill thread-to-video
 
 This copies the self-contained skill folder (`SKILL.md` + the CLI + data) into your agent's skills directory (for Claude Code: `.claude/skills/`, or `~/.claude/skills/` with `-g`). Then ask your agent to make a video from a Threads link; on first use the skill runs `t2v.py setup` for you (creates a private Python env, installs Chromium, downloads ~100MB of music, backgrounds, memes and sounds into `~/.thread-to-video/`). Manual alternative: copy `skills/thread-to-video` into `~/.claude/skills/`.
 
+### Update
+
+```bash
+npx skills update thread-to-video        # project install (add -g for a global one)
+python3 <skill dir>/t2v.py assets         # fetch any new media listed in the updated manifest
+```
+
+`update` overwrites the skill folder with the latest version from GitHub; media in `~/.thread-to-video/` is kept, and `assets` only downloads what is missing. For the plain CLI, `git pull` instead.
+
 ### As a plain CLI
 
 ```bash
