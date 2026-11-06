@@ -46,6 +46,16 @@ def speak(t):
     return re.sub(r"\s+", " ", t).strip()
 
 
+def mask(t):
+    """Censor profanity on screen (keeps first letter: 'lồn' -> 'l**') so platforms don't limit reach. List: profanity.json."""
+    f = SKILL_DIR / "profanity.json"
+    words = sorted(json.loads(f.read_text()) if f.exists() else [], key=len, reverse=True)
+    if not words:
+        return t
+    rx = r"(?<!\w)(" + "|".join(map(re.escape, words)) + r")(?!\w)"
+    return re.sub(rx, lambda m: m.group(1)[0] + "*" * (len(m.group(1)) - 1), t, flags=re.I)
+
+
 def tts_clean(t):  # TTS reads emoji/URLs/hashtags badly; display text stays untouched
     t = re.sub(r"https?://\S+|#\S+", " ", t)
     return re.sub(r"\s+", " ", EMOJI.sub(" ", t)).strip()
@@ -253,6 +263,10 @@ def card_html(s, text, fs):
         b64 = base64.b64encode(Path(s["images"][0]).read_bytes()).decode()
         img = (f'<img src="data:image/jpeg;base64,{b64}" style="display:block;margin-top:18px;width:100%;'
                f'max-height:{s.get("image_h", 640)}px;object-fit:contain;background:#f2f2f2;border-radius:18px">')
+        if s.get("image_blur"):  # [[x,y,w,h],...] fractions 0-1 of the image: blur text in the picture
+            boxes = "".join(f'<div style="position:absolute;left:{x*100}%;top:{y*100}%;width:{w*100}%;height:{h*100}%;'
+                            f'backdrop-filter:blur(14px);background:rgba(255,255,255,.35)"></div>' for x, y, w, h in s["image_blur"])
+            img = f'<div style="position:relative;display:inline-block;width:100%">{img}{boxes}</div>'
     return f"""<body style="margin:0;background:transparent"><div id=c style="width:920px;box-sizing:border-box;
 padding:30px 36px;border-radius:30px;background:#fff;color:#101010;font:{fs}px/1.35 -apple-system,'Helvetica Neue',Arial,sans-serif">
 <div style="display:flex;align-items:center;gap:18px;margin-bottom:16px">{av}<b style="font-size:34px">{html.escape(s['user'])}</b>
@@ -347,7 +361,7 @@ def cmd_render(a):
     for i, s in enumerate(scenes):
         if s["type"] != "card":
             continue
-        shown = s["display"][:a.max_chars] + ("…" if len(s["display"]) > a.max_chars else "")
+        shown = (s["display"] if a.no_mask else mask(s["display"]))[:a.max_chars] + ("…" if len(s["display"]) > a.max_chars else "")
         steps = reveal_steps(shown) if s.get("reveal", True) else [shown]
         plan[i] = {"first": len(jobs), "steps": steps}
         for k, t in enumerate(steps):
@@ -362,6 +376,7 @@ color:#fff;background:#0007;border-radius:16px">{html.escape(a.watermark)}</div>
 background:linear-gradient(to top,{a.grad}f0 0%,{a.grad}00 100%)"></div></body>""", str(w / "grad.png")))
     if hook:  # *word* = yellow highlight; thick black outline like TikTok titles
         t = re.sub(r"\*(.+?)\*", r'<span style="color:#ffd400">\1</span>', html.escape(hook["text"]))
+        t = t if a.no_mask else mask(t)  # after the *highlight* step so masking stars aren't read as highlight marks
         jobs.append((f"""<body style="margin:0;background:transparent"><div id=c style="width:1000px;text-align:center;
 font:900 76px/1.15 -apple-system,'Helvetica Neue',Arial,sans-serif;color:#fff;-webkit-text-stroke:11px #000;paint-order:stroke fill">{t}</div></body>""",
                      str(w / "hook.png")))
@@ -663,7 +678,8 @@ if __name__ == "__main__":
     s = sub.add_parser("transcribe"); s.set_defaults(fn=cmd_transcribe)
     s.add_argument("file"); s.add_argument("--model", default="small")
     r = sub.add_parser("render"); r.set_defaults(fn=cmd_render)
-    r.add_argument("project"); r.add_argument("--bg", help="background video (mp4); default: the Minecraft clip if downloaded, 'none' = plain colour")
+    r.add_argument("project"); r.add_argument("--no-mask", action="store_true", help="don't censor profanity on screen")
+    r.add_argument("--bg", help="background video (mp4); default: the Minecraft clip if downloaded, 'none' = plain colour")
     r.add_argument("--bgm", help="background music; default: sleepy-cat if downloaded, 'none' = no music")
     r.add_argument("--bgm-vol", type=float, default=0.25, help="music volume (ducks automatically under the voice)")
     r.add_argument("--watermark"); r.add_argument("--memes-dir", default=str(HOME / "memes")); r.add_argument("--sounds-dir", default=str(HOME / "sounds"))
